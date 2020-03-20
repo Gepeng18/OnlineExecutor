@@ -1,7 +1,12 @@
-package org.olexec.execute;
+package site.pyyf.execute;
 
+import site.pyyf.compile.StringSourceCompiler;
+
+import javax.tools.JavaFileObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 执行外部传来的一个代表Java类的byte数组
@@ -18,20 +23,25 @@ public class JavaClassExecutor {
     /* 程序中正在运行的客户端代码个数 */
 //    private static volatile AtomicInteger runningCount = new AtomicInteger(0);
 
-    public static String execute(byte[] classByte, String systemIn) {
-        // 2. new ClassModifier，并传入需要被修改的字节数组
-        ClassModifier cm = new ClassModifier(classByte);
+    public static String execute(Map<String, JavaFileObject> fileObjectMap,String publicClassName, String systemIn) throws ClassNotFoundException {
+        Map<String,byte[]> modifiedByte = new HashMap<>();
+        for (Map.Entry<String, JavaFileObject> fileObject : fileObjectMap.entrySet()) {
+            // 2. new ClassModifier，并传入需要被修改的字节数组
+            ClassModifier cm = new ClassModifier(((StringSourceCompiler.TmpJavaFileObject) fileObject.getValue()).getCompiledBytes());
 
-        // 3. 调用ClassModifier#modifyUTF8Constant修改
-        byte[] modifyBytes = cm.modifyUTF8Constant("java/lang/System","org/olexec/execute/HackSystem");
-        modifyBytes = cm.modifyUTF8Constant("java/util/Scanner", "org/olexec/execute/HackScanner");
+            // 3. 调用ClassModifier#modifyUTF8Constant修改
+            byte[] modifyBytes = cm.modifyUTF8Constant("java/lang/System","site/pyyf/execute/HackSystem");
+            modifyBytes = cm.modifyUTF8Constant("java/util/Scanner", "site/pyyf/execute/HackScanner");
+            modifiedByte.put(fileObject.getKey(),modifyBytes);
+
+        }
 
         // 设置用户传入的标准输入
         ((HackInputStream) HackSystem.in).set(systemIn);
-
         // 4. new一个类加载器，把字节数组加载为Class对象
-        HotSwapClassLoader classLoader = new HotSwapClassLoader();
-        Class clazz = classLoader.loadByte(modifyBytes);
+        HotSwapClassLoader classLoader = new HotSwapClassLoader(modifiedByte);
+
+        Class clazz = classLoader.loadClass(publicClassName);
 
         // 5. 通过反射调用Class对象的main方法
         try {

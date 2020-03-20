@@ -1,4 +1,4 @@
-package org.olexec.compile;
+package site.pyyf.compile;
 
 import javax.tools.*;
 import java.io.ByteArrayOutputStream;
@@ -15,32 +15,35 @@ public class StringSourceCompiler {
     private static Map<String, JavaFileObject> fileObjectMap = new ConcurrentHashMap<>();
 
     /** 使用 Pattern 预编译功能 */
-    private static Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
+    private static Pattern PUBLIC_CLASS_PATTERN = Pattern.compile("public class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
 
-    public static byte[] compile(String source, DiagnosticCollector<JavaFileObject> compileCollector) {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        JavaFileManager javaFileManager =
-                new TmpJavaFileManager(compiler.getStandardFileManager(compileCollector, null, null));
-
+    public static String matchPublicClassName(String source){
         // 从源码字符串中匹配类名
-        Matcher matcher = CLASS_PATTERN.matcher(source);
+        Matcher matcher = PUBLIC_CLASS_PATTERN.matcher(source);
         String className;
         if (matcher.find()) {
             className = matcher.group(1);
         } else {
             throw new IllegalArgumentException("No valid class");
         }
+        return className;
+    }
+    public static Map<String, JavaFileObject> compile(String source, DiagnosticCollector<JavaFileObject> compileCollector) {
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        JavaFileManager javaFileManager =
+                new TmpJavaFileManager(compiler.getStandardFileManager(compileCollector, null, null));
 
+        final String publicClassName = matchPublicClassName(source);
         // 把源码字符串构造成JavaFileObject，供编译使用
-        JavaFileObject sourceJavaFileObject = new TmpJavaFileObject(className, source);
+        JavaFileObject sourceJavaFileObject = new TmpJavaFileObject(publicClassName, source);
 
         Boolean result = compiler.getTask(null, javaFileManager, compileCollector,
                 null, null, Arrays.asList(sourceJavaFileObject)).call();
 
-        JavaFileObject bytesJavaFileObject = fileObjectMap.get(className);
-        if (result && bytesJavaFileObject != null) {
-            return ((TmpJavaFileObject) bytesJavaFileObject).getCompiledBytes();
+        if (result && fileObjectMap != null) {
+            return fileObjectMap;
         }
+
         return null;
     }
 

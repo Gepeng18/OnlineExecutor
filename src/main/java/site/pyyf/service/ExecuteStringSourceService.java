@@ -1,13 +1,15 @@
-package org.olexec.service;
+package site.pyyf.service;
 
-import org.olexec.compile.StringSourceCompiler;
-import org.olexec.execute.JavaClassExecutor;
+import site.pyyf.compile.StringSourceCompiler;
+import site.pyyf.execute.JavaClassExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
+import java.io.*;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 @Service
@@ -25,14 +27,18 @@ public class ExecuteStringSourceService {
     private static final String WAIT_WARNING = "服务器忙，请稍后提交";
     private static final String NO_OUTPUT = "Nothing.";
 
-    public String execute(String source, String systemIn) {
+    public String execute(String source, String systemIn) throws IOException {
+        // 从源码字符串中匹配类名
+        final String className = StringSourceCompiler.matchPublicClassName(source);
+
         DiagnosticCollector<JavaFileObject> compileCollector = new DiagnosticCollector<>(); // 编译结果收集器
 
         // 编译源代码
-        byte[] classBytes = StringSourceCompiler.compile(source, compileCollector);
+        Map<String, JavaFileObject> fileObjectMap = StringSourceCompiler.compile(source, compileCollector);
+
 
         // 编译不通过，获取并返回编译错误信息
-        if (classBytes == null) {
+        if (fileObjectMap == null) {
             // 获取编译错误信息
             List<Diagnostic<? extends JavaFileObject>> compileError = compileCollector.getDiagnostics();
             StringBuilder compileErrorRes = new StringBuilder();
@@ -49,7 +55,7 @@ public class ExecuteStringSourceService {
         Callable<String> runTask = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return JavaClassExecutor.execute(classBytes, systemIn);
+                return JavaClassExecutor.execute(fileObjectMap,className, systemIn);
             }
         };
 

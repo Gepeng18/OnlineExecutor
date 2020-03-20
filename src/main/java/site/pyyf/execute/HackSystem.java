@@ -1,4 +1,4 @@
-package org.olexec.execute;
+package site.pyyf.execute;
 
 import sun.reflect.CallerSensitive;
 
@@ -35,6 +35,30 @@ public final class HackSystem {
 
     private static volatile SecurityManager security = null;
 
+    public static long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
+    public static long nanoTime() {
+        return System.nanoTime();
+    }
+
+    public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length) {
+        System.arraycopy(src, srcPos, dest, destPos, length);
+    }
+
+    public static int identityHashCode(Object x) {
+        return System.identityHashCode(x);
+    }
+
+    public static String lineSeparator() {
+        return System.lineSeparator();
+    }
+
+
+
+
+
     public static void setIn(InputStream in) {
         throw new SecurityException("Use hazardous method: System.setIn().");
     }
@@ -63,29 +87,11 @@ public final class HackSystem {
         throw new SecurityException("Use hazardous method: System.getSecurityManager().");
     }
 
-    public static long currentTimeMillis() {
-        return System.currentTimeMillis();
-    }
-
-    public static long nanoTime() {
-        return System.nanoTime();
-    }
-
-    public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length) {
-        System.arraycopy(src, srcPos, dest, destPos, length);
-    }
-
-    public static int identityHashCode(Object x) {
-        return System.identityHashCode(x);
-    }
-
     public static Properties getProperties() {
         throw new SecurityException("Use hazardous method: System.getProperties().");
     }
 
-    public static String lineSeparator() {
-        return System.lineSeparator();
-    }
+
 
     public static void setProperties(Properties props) {
         throw new SecurityException("Use hazardous method: System.setProperties().");

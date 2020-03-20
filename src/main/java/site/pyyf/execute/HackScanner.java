@@ -1,4 +1,4 @@
-package org.olexec.execute;
+package site.pyyf.execute;
 
 import sun.misc.LRUCache;
 
@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
  *
  * PS. Scanner 类要是能 extends 就好了，这样就不用写这么多了，现在这个类看起来好吓人...
  */
+
 public final class HackScanner implements Iterator<String>, Closeable {
 
     // Internal buffer used to hold input
@@ -862,7 +863,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      * @param pattern A delimiting pattern
      * @return this scanner
      */
-    public org.olexec.execute.HackScanner useDelimiter(Pattern pattern) {
+    public HackScanner useDelimiter(Pattern pattern) {
         delimPattern = pattern;
         return this;
     }
@@ -881,7 +882,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      * @param pattern A string specifying a delimiting pattern
      * @return this scanner
      */
-    public org.olexec.execute.HackScanner useDelimiter(String pattern) {
+    public HackScanner useDelimiter(String pattern) {
         delimPattern = patternCache.forName(pattern);
         return this;
     }
@@ -912,7 +913,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      * @param locale A string specifying the locale to use
      * @return this scanner
      */
-    public org.olexec.execute.HackScanner useLocale(Locale locale) {
+    public HackScanner useLocale(Locale locale) {
         if (locale.equals(this.locale))
             return this;
 
@@ -982,7 +983,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      * @return this scanner
      * @throws IllegalArgumentException if radix is out of range
      */
-    public org.olexec.execute.HackScanner useRadix(int radix) {
+    public HackScanner useRadix(int radix) {
         if ((radix < Character.MIN_RADIX) || (radix > Character.MAX_RADIX))
             throw new IllegalArgumentException("radix:"+radix);
 
@@ -1447,7 +1448,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      * @throws NoSuchElementException if the specified pattern is not found
      * @throws IllegalStateException if this scanner is closed
      */
-    public org.olexec.execute.HackScanner skip(Pattern pattern) {
+    public HackScanner skip(Pattern pattern) {
         ensureOpen();
         if (pattern == null)
             throw new NullPointerException();
@@ -1480,7 +1481,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      * @return this scanner
      * @throws IllegalStateException if this scanner is closed
      */
-    public org.olexec.execute.HackScanner skip(String pattern) {
+    public HackScanner skip(String pattern) {
         return skip(patternCache.forName(pattern));
     }
 
@@ -2342,7 +2343,7 @@ public final class HackScanner implements Iterator<String>, Closeable {
      *
      * @since 1.6
      */
-    public org.olexec.execute.HackScanner reset() {
+    public HackScanner reset() {
         delimPattern = WHITESPACE_PATTERN;
         useLocale(Locale.getDefault(Locale.Category.FORMAT));
         useRadix(10);
