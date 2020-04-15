@@ -46,6 +46,7 @@ public class ClassModifier {
      * @param oldStr
      * @param newStr
      * @return 修改后的字节码字节数组
+     * 每个常量在常量池中的内容分为三部分 tag len 以及内容
      */
     public byte[] modifyUTF8Constant(String oldStr, String newStr) {
         int cpc = getConstantPoolCount();

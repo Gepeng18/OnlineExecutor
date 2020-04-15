@@ -30,10 +30,15 @@ public class StringSourceCompiler {
     }
     public static Map<String, JavaFileObject> compile(String source, DiagnosticCollector<JavaFileObject> compileCollector) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+
+        /**
+         * 管理器，负责控制fileObjectMap中javaFileObject的放入和取出
+         */
         JavaFileManager javaFileManager =
                 new TmpJavaFileManager(compiler.getStandardFileManager(compileCollector, null, null));
 
         final String publicClassName = matchPublicClassName(source);
+
         // 把源码字符串构造成JavaFileObject，供编译使用
         JavaFileObject sourceJavaFileObject = new TmpJavaFileObject(publicClassName, source);
 
@@ -97,6 +102,9 @@ public class StringSourceCompiler {
             this.source = null;
         }
 
+        /**
+         * 内部调用
+         */
         @Override
         public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
             if (source == null) {
@@ -105,12 +113,19 @@ public class StringSourceCompiler {
             return source;
         }
 
+
+        /**
+         * 内部调用
+         */
         @Override
         public OutputStream openOutputStream() throws IOException {
             outputStream = new ByteArrayOutputStream();
             return outputStream;
         }
 
+        /**
+         * 外部调用
+         */
         public byte[] getCompiledBytes() {
             return outputStream.toByteArray();
         }

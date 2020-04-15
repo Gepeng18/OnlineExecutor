@@ -24,7 +24,7 @@ public class JavaClassExecutor {
 //    private static volatile AtomicInteger runningCount = new AtomicInteger(0);
 
     public static String execute(Map<String, JavaFileObject> fileObjectMap,String publicClassName, String systemIn) throws ClassNotFoundException {
-        Map<String,byte[]> modifiedByte = new HashMap<>();
+        Map<String,byte[]> modifiedBytes = new HashMap<>();
         for (Map.Entry<String, JavaFileObject> fileObject : fileObjectMap.entrySet()) {
             // 2. new ClassModifier，并传入需要被修改的字节数组
             ClassModifier cm = new ClassModifier(((StringSourceCompiler.TmpJavaFileObject) fileObject.getValue()).getCompiledBytes());
@@ -32,14 +32,14 @@ public class JavaClassExecutor {
             // 3. 调用ClassModifier#modifyUTF8Constant修改
             byte[] modifyBytes = cm.modifyUTF8Constant("java/lang/System","site/pyyf/execute/HackSystem");
             modifyBytes = cm.modifyUTF8Constant("java/util/Scanner", "site/pyyf/execute/HackScanner");
-            modifiedByte.put(fileObject.getKey(),modifyBytes);
+            modifiedBytes.put(fileObject.getKey(),modifyBytes);
 
         }
 
         // 设置用户传入的标准输入
         ((HackInputStream) HackSystem.in).set(systemIn);
         // 4. new一个类加载器，把字节数组加载为Class对象
-        HotSwapClassLoader classLoader = new HotSwapClassLoader(modifiedByte);
+        HotSwapClassLoader classLoader = new HotSwapClassLoader(modifiedBytes);
 
         Class clazz = classLoader.loadClass(publicClassName);
 
