@@ -17,13 +17,11 @@ import java.util.concurrent.*;
  */
 @Service
 public class ExecuteStringSourceService {
-<<<<<<< HEAD
+
     /**
      * 客户端发来的程序的运行时间限制
      */
-=======
-    /** 客户端发来的程序的运行时间限制 */
->>>>>>> 5bbc4b88b21192aa3847a455c6a76384622ddd26
+
     private static final int RUN_TIME_LIMITED = 15;
 
     /** N_THREAD = N_CPU + 1，因为是 CPU 密集型的操作 */
