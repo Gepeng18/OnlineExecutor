@@ -12,9 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+/**
+ * @author Freya
+ */
 @Service
 public class ExecuteStringSourceService {
-    /* 客户端发来的程序的运行时间限制 */
+    /**
+     * 客户端发来的程序的运行时间限制
+     */
     private static final int RUN_TIME_LIMITED = 15;
 
     /* N_THREAD = N_CPU + 1，因为是 CPU 密集型的操作 */
