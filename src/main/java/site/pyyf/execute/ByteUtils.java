@@ -37,4 +37,5 @@ public class ByteUtils {
                 oldBytes.length - offset - len);
         return newBytes;
     }
+
 }

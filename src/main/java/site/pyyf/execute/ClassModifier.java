@@ -50,7 +50,8 @@ public class ClassModifier {
      */
     public byte[] modifyUTF8Constant(String oldStr, String newStr) {
         int cpc = getConstantPoolCount();
-        int offset = CONSTANT_POOL_COUNT_INDEX + u2;  // 真实的常量起始位置
+        // 真实的常量起始位置
+        int offset = CONSTANT_POOL_COUNT_INDEX + u2;
         for (int i = 1; i < cpc; i++) {
             int tag = ByteUtils.byte2Int(classByte, offset, u1);
             if (tag == CONSTANT_UTF8_INFO) {
@@ -64,7 +65,8 @@ public class ClassModifier {
                     classByte = ByteUtils.byteReplace(classByte, offset - u2, u2, intReplaceBytes);
                     // 替换字符串本身
                     classByte = ByteUtils.byteReplace(classByte, offset, len, strReplaceBytes);
-                    return classByte;  // 就一个地方需要改，改完就可以返回了
+                    // 就一个地方需要改，改完就可以返回了
+                    return classByte;
                 } else {
                     offset += len;
                 }

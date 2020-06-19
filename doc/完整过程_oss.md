@@ -364,7 +364,7 @@ try {
 
 那么如何将客户端程序中对 System 的调用替换为对 HackSystem 的调用呢？当然不能直接修改客户端发来的程序的源代码字符串了，这既不优雅，操作也十分的繁琐。我们采用了一种“高级”的方法，即直接在字节码中，把要执行的类对 System 的符号引用替换为我们准备的 HackSystem 的符号引用，因此我们需要一个字节码修改器，这个字节码修改器完成如下流程：
 
-- 遍历字节码常量池中的所有**符号引用**，找到 "java/lang/System"；
+- 遍历字节码常量池中的所有符号引用，找到 "java/lang/System"；
 - 将 "java/lang/System" 替换为 “.../HackSystem”。
 
 要想完成以上 2 步操作，首先我们要了解类文件的结构，这样我们才能找到类对 System 的符号引用的位置，并且知道替换的方法；其次，我们还需要一个字节数组修改工具 ByteUtils 帮助我们修改存储字节码的字节数组。
@@ -398,10 +398,10 @@ Class 文件的头 8 个字节是魔数和版本号，其中头 4 个字节是�
 
 常量池中记录的是代码出现过的所有 token（类名，成员变量名等，也是我们接下来要修改的地方）以及符号引用（方法引用，成员变量引用等），主要包括以下两大类常量：
 
-- **字面量**：接近于 Java 语言层面的常量概念，包括
+- 字面量：接近于 Java 语言层面的常量概念，包括
   - 文本字符串
   - 声明为 final 的常量值
-- **符号引用**：以一组符号来描述所引用的目标，包括
+- 符号引用：以一组符号来描述所引用的目标，包括
   - 类和接口的全限定名
   - 字段的名称和描述符
   - 方法的名称和描述符
@@ -439,7 +439,7 @@ CONSTANT_Class_info 的存储结构为：
 - String to byte
 - 替换字节数组中的部分字节
 
-具体实现详见：[ByteUtils.java](../src/main/java/org/olexec/execute/ByteUtils.java)
+具体实现详见：[ByteUtils.java(../src/main/java/org/olexec/execute/ByteUtils.java)
 
 
 
@@ -452,7 +452,7 @@ CONSTANT_Class_info 的存储结构为：
 - 找到存储的常量值为 java/lang/System 的常量，把它替换为 org/olexec/execute/HackSystem；
 - 因为只可能有一个值为 java/lang/System 的 CONSTANT_Utf8_info 常量，所以找到之后可以立即返回修改后的字节码。
 
-具体实现详见：[ClassModifier.java](../src/main/java/org/olexec/execute/ClassModifier.java)
+具体实现详见：[ClassModifier.java(../src/main/java/org/olexec/execute/ClassModifier.java)
 
 
 
@@ -494,10 +494,10 @@ runResult = runResult.replaceAll(System.lineSeparator(), "<br/>");
 
 System 类，正如其名“系统”，是在 Java 程序中作为一个标准的系统类，与 Class 类一样的直接注册进虚拟机，也就是说，是一个直接与虚拟机打交道的类，它实现了：
 
-- **控制台与程序之间的输入输出流的控制；**
+- 控制台与程序之间的输入输出流的控制；
 - 系统的初始化；
 - 获取系统环境变量；
-- **数组的复制；**
+- 数组的复制；
 - 返回一个精准的时间；
 - 一些简单的对虚拟机的操作等。
 
@@ -585,7 +585,7 @@ public static void arraycopy(Object src,  int srcPos, Object dest, int destPos, 
 }
 ```
 
-HackSystem 这样就已经可以了，详细的实现可见 [HackSystem.java](../src/main/java/org/olexec/execute/HackSystem.java)
+HackSystem 这样就已经可以了，详细的实现可见 [HackSystem.java(../src/main/java/org/olexec/execute/HackSystem.java)
 
 接下来我们将对 HackPrintStream 类的实现进行解说，这个类的实现是解除并发问题的关键。
 
@@ -713,4 +713,4 @@ public void write(byte buf[], int off, int len) {
 }
 ```
 
-按照以上方式对 PrintStream 中需要重写的方法进行重写，详细的实现可见 [HackPrintStream.java](../src/main/java/org/olexec/execute/HackPrintStream.java)
+按照以上方式对 PrintStream 中需要重写的方法进行重写，详细的实现可见 [HackPrintStream.java(../src/main/java/org/olexec/execute/HackPrintStream.java)

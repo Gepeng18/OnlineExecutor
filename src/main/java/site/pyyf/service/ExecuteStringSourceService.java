@@ -14,13 +14,13 @@ import java.util.concurrent.*;
 
 @Service
 public class ExecuteStringSourceService {
-    /* 客户端发来的程序的运行时间限制 */
+    /** 客户端发来的程序的运行时间限制 */
     private static final int RUN_TIME_LIMITED = 15;
 
-    /* N_THREAD = N_CPU + 1，因为是 CPU 密集型的操作 */
+    /** N_THREAD = N_CPU + 1，因为是 CPU 密集型的操作 */
     private static final int N_THREAD = 5;
 
-    /* 负责执行客户端代码的线程池，根据《Java 开发手册》不可用 Executor 创建，有 OOM 的可能 */
+    /** 负责执行客户端代码的线程池，根据《Java 开发手册》不可用 Executor 创建，有 OOM 的可能 */
     private static final ExecutorService pool = new ThreadPoolExecutor(N_THREAD, N_THREAD,
             0L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(N_THREAD));
 
@@ -31,7 +31,8 @@ public class ExecuteStringSourceService {
         // 从源码字符串中匹配类名
         final String className = StringSourceCompiler.matchPublicClassName(source);
 
-        DiagnosticCollector<JavaFileObject> compileCollector = new DiagnosticCollector<>(); // 编译结果收集器
+        // 编译结果收集器
+        DiagnosticCollector<JavaFileObject> compileCollector = new DiagnosticCollector<>();
 
         // 编译源代码
         Map<String, JavaFileObject> fileObjectMap = StringSourceCompiler.compile(source, compileCollector);
@@ -50,6 +51,8 @@ public class ExecuteStringSourceService {
             }
             return compileErrorRes.toString();
         }
+
+
 
         // 运行字节码的main方法
         Callable<String> runTask = new Callable<String>() {
@@ -81,4 +84,5 @@ public class ExecuteStringSourceService {
         }
         return runResult != null ? runResult : NO_OUTPUT;
     }
+
 }
