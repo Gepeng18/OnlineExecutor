@@ -15,7 +15,7 @@ public class StringSourceCompiler {
     private static Map<String, JavaFileObject> fileObjectMap = new ConcurrentHashMap<>();
 
     /** 使用 Pattern 预编译功能 */
-    private static Pattern PUBLIC_CLASS_PATTERN = Pattern.compile("public class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
+    private static Pattern PUBLIC_CLASS_PATTERN = Pattern.compile("public class\\s+([_a-zA-Z][_a-zA-Z0-9]*)\\s*");
 
     public static String matchPublicClassName(String source){
         // 从源码字符串中匹配类名

@@ -92,7 +92,6 @@ public final class HackSystem {
     }
 
 
-
     public static void setProperties(Properties props) {
         throw new SecurityException("Use hazardous method: System.setProperties().");
     }

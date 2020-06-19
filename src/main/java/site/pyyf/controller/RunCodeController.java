@@ -35,7 +35,8 @@ public class RunCodeController {
     public String runCode(@RequestParam("source") String source,
                           @RequestParam("systemIn") String systemIn, Model model) throws IOException {
         String runResult = executeStringSourceService.execute(source, systemIn);
-        runResult = runResult.replaceAll(System.lineSeparator(), "<br/>"); // 处理html中换行的问题
+        // 处理html中换行的问题
+        runResult = runResult.replaceAll(System.lineSeparator(), "<br/>");
         System.out.println(runResult);
         model.addAttribute("lastSource", source);
         model.addAttribute("lastSystemIn", systemIn);

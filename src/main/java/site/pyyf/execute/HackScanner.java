@@ -26,6 +26,9 @@ import java.util.regex.Pattern;
  * 该类整个复制 Scanner 类，唯一的区别在于修改一下这个构造函数：
  * HackScanner(InputStream source)
  *
+ * 判断一下输入的 InputStream 是不是 我们自己写的InputStream，
+ * 如果是就调用一下它的 get 方法，把当前线程的输入流从 ThreadLocal 中取出来转化为reader后传给构造函数
+ *
  * 然后在把所有报错的地方修改一下，主要修改：
  * 1. 构造函数的类名：Scanner -> HackScanner
  * 2. 几个方法的返回参数类型：java.util.Scanner -> org.olexec.execute.HackScanner
@@ -95,9 +98,11 @@ public final class HackScanner implements Iterator<String>, Closeable {
     // A cache of the last few recently used Patterns
     private LRUCache<String,Pattern> patternCache =
             new LRUCache<String,Pattern>(7) {
+                @Override
                 protected Pattern create(String s) {
                     return Pattern.compile(s);
                 }
+                @Override
                 protected boolean hasName(Pattern p, String s) {
                     return p.pattern().equals(s);
                 }
