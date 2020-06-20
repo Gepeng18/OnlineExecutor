@@ -7,7 +7,7 @@ import java.io.InputStream;
 /**
  * 这个类本质上和 HackPrintStream 差不多，不过它不需要格式化输出的功能，
  * 唯一的功能就是为每一个线程都保持一个标准输入流
- *  get set 向输入流放和取 需要重写 close需要重写
+ *  get set 向输入流放和取，需要重写， close需要重写
  */
 public class HackInputStream extends InputStream {
     public final static ThreadLocal<InputStream> holdInputStream = new ThreadLocal<>();

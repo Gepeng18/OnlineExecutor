@@ -27,11 +27,11 @@ import java.util.regex.Pattern;
  * HackScanner(InputStream source)
  *
  * 判断一下输入的 InputStream 是不是 我们自己写的InputStream，
- * 如果是就调用一下它的 get 方法，把当前线程的输入流从 ThreadLocal 中取出来转化为reader后传给构造函数
+ * 如果是就调用一下它的 get 方法，把当前线程的输入流从 ThreadLocal 中取出来转化为 reader后传给构造函数
  *
  * 然后在把所有报错的地方修改一下，主要修改：
- * 1. 构造函数的类名：Scanner -> HackScanner
- * 2. 几个方法的返回参数类型：java.util.Scanner -> org.olexec.execute.HackScanner
+ *      1. 构造函数的类名：Scanner -> HackScanner
+ *      2. 几个方法的返回参数类型：java.util.Scanner -> org.olexec.execute.HackScanner
  *
  * PS. Scanner 类要是能 extends 就好了，这样就不用写这么多了，现在这个类看起来好吓人...
  */

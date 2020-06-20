@@ -4,12 +4,17 @@ import java.io.*;
 
 /**
  * write print（前两个都是写） toString（这个是读） flush close这些方法都是操作线程独占的outputstream
- * error相关：setError  clearError checkError也都是操作线程独占的touble的flag
+ * error相关：setError  clearError checkError也都是操作线程独占的trouble的flag
  */
 public class HackPrintStream extends PrintStream {
-    // 每个线程的标准输出流
+    /**
+     *  每个线程的标准输出流
+     */
     private ThreadLocal<ByteArrayOutputStream> out;
-    // 每个线程的标准输出写入过程是否抛出IOException
+
+    /**
+     * 每个线程的标准输出写入过程是否抛出IOException
+     */
     private ThreadLocal<Boolean> trouble;
 
     public HackPrintStream() {
@@ -183,7 +188,7 @@ public class HackPrintStream extends PrintStream {
         }
     }
 
-    /*
+    /**
      * The following private methods on the text- and character-output streams
      * always flush the stream buffers, so that writes to the underlying byte
      * stream occur as promptly as with the original PrintStream.
